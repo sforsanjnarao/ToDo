@@ -1,4 +1,6 @@
-import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+// After (correct type-only import)
+import { useState, useEffect } from 'react';
+import type { FormEvent, ChangeEvent } from 'react';
 import axios, { AxiosError } from 'axios';
 import './App.css'
 
