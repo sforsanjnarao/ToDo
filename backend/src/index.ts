@@ -29,6 +29,9 @@ app.use(cors({
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // GET all todos
+app.get('/',(req:Request,res:Response):void=>{
+    console.log("hey user")
+})
 app.get('/api/todos', (req: Request, res: Response):void => {
   res.json(todos);
 });
