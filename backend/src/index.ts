@@ -66,7 +66,9 @@ app.put('/api/todos/:id', (req: Request, res: Response):void => {
 });
 
 app.delete('/api/todos/:id', (req: Request, res: Response):void => {
+
   const { id } = req.params;
+  console.log(id)
   const initialLength = todos.length;
   todos = todos.filter(todo => todo.id !== id);
 
@@ -78,5 +80,5 @@ app.delete('/api/todos/:id', (req: Request, res: Response):void => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on ${PORT}`);
 });
