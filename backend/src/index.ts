@@ -23,7 +23,7 @@ let todos: Todo[] = [
 ];
 
 app.use(cors({
-    origin: 'http://localhost:5173', // or your deployed frontend URL
+    origin: 'https://sanjana-todo.netlify.app/', // or your deployed frontend URL
     credentials: true,
   }));
 app.use(express.json()); // Middleware to parse JSON bodies
