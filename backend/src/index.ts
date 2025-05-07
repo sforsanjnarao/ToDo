@@ -1,12 +1,10 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv'
 dotenv.config()
 
 const app = express();
-type Request=express.Request
-type Response=express.Response
 const PORT = process.env.PORT || 3001;
 
 // Define the Todo type
@@ -23,11 +21,11 @@ let todos: Todo[] = [
 ];
 
 app.use(cors({
-    origin: 'https://sanjana-todo.netlify.app/', // or your deployed frontend URL
+    origin: 'https://sanjana-todo.netlify.app', // or your deployed frontend URL
     credentials: true,
   }));
 app.use(express.json()); // Middleware to parse JSON bodies
-
+console.log("fsdsd")
 // GET all todos
 app.get('/',(req:Request,res:Response):void=>{
     console.log("hey user")
