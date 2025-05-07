@@ -1,7 +1,6 @@
 // frontend/src/App.tsx
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import axios, { AxiosError } from 'axios'; // Import axios and AxiosError for typing
-import { Todo } from './types';
 import './App.css';
 
 // Create an axios instance with a base URL (optional but recommended)
@@ -9,11 +8,17 @@ const apiClient = axios.create({
   baseURL: 'http://localhost:3001/api',
 });
 
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoText, setNewTodoText] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
 
   // Fetch todos on component mount
   useEffect(() => {
