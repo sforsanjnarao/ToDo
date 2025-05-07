@@ -7,26 +7,23 @@ dotenv.config()
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Define the Todo type
 interface Todo {
   id: string;
   text: string;
   completed: boolean;
 }
 
-// In-memory store for todos
 let todos: Todo[] = [
   { id: uuidv4(), text: 'Learn Express', completed: true },
   { id: uuidv4(), text: 'Learn React', completed: false },
 ];
 
 app.use(cors({
-    origin: 'https://sanjana-todo.netlify.app', // or your deployed frontend URL
+    origin: 'https://sanjana-todo.netlify.app', 
     credentials: true,
   }));
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.json()); 
 console.log("fsdsd")
-// GET all todos
 app.get('/',(req:Request,res:Response):void=>{
     console.log("hey user")
 })
@@ -34,7 +31,6 @@ app.get('/api/todos', (req: Request, res: Response):void => {
   res.json(todos);
 });
 
-// POST a new todo
 app.post('/api/todos', (req: Request, res: Response):void => {
   const { text } = req.body;
   if (!text || typeof text !== 'string') {
@@ -49,7 +45,6 @@ app.post('/api/todos', (req: Request, res: Response):void => {
   res.status(201).json(newTodo);
 });
 
-// PUT to update a todo (toggle complete or change text)
 app.put('/api/todos/:id', (req: Request, res: Response):void => {
   const { id } = req.params;
   const { text, completed } = req.body;
@@ -60,7 +55,6 @@ app.put('/api/todos/:id', (req: Request, res: Response):void => {
     return 
   }
 
-  // Update fields if they are provided in the request body
   if (typeof text === 'string') {
     todos[todoIndex].text = text;
   }
@@ -71,7 +65,6 @@ app.put('/api/todos/:id', (req: Request, res: Response):void => {
   res.json(todos[todoIndex]);
 });
 
-// DELETE a todo
 app.delete('/api/todos/:id', (req: Request, res: Response):void => {
   const { id } = req.params;
   const initialLength = todos.length;
@@ -81,7 +74,7 @@ app.delete('/api/todos/:id', (req: Request, res: Response):void => {
     return  
   }
 
-  res.status(204).send(); // No content
+  res.status(204).send(); 
 });
 
 app.listen(PORT, () => {
