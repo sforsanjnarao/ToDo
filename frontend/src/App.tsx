@@ -1,9 +1,6 @@
-// frontend/src/App.tsx
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
-import axios, { AxiosError } from 'axios'; // Import axios and AxiosError for typing
-import './App.css';
+import axios, { AxiosError } from 'axios';
 
-// Create an axios instance with a base URL (optional but recommended)
 const apiClient = axios.create({
   baseURL: 'http://localhost:3001/api',
 });
@@ -13,110 +10,128 @@ interface Todo {
   text: string;
   completed: boolean;
 }
+
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [newTodoText, setNewTodoText] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [newTodoText, setNewTodoText] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
-  // Fetch todos on component mount
   useEffect(() => {
     const fetchTodos = async () => {
-      setIsLoading(true);
-      setError(null);
       try {
-        const response = await apiClient.get<Todo[]>('/todos'); // GET request
-        setTodos(response.data);
+        const res = await apiClient.get('/todos');
+        setTodos(res.data);
       } catch (e) {
-        const err = e as AxiosError | Error; // Type assertion
+        const err = e as AxiosError | Error;
         setError(err.message);
-        console.error("Failed to fetch todos:", err);
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchTodos();
   }, []);
 
   const handleAddTodo = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newTodoText.trim()) return;
-
     try {
-      const response = await apiClient.post<Todo>('/todos', { text: newTodoText }); // POST request
-      setTodos([...todos, response.data]);
+      const res = await apiClient.post('/todos', { text: newTodoText });
+      setTodos([...todos, res.data]);
       setNewTodoText('');
     } catch (e) {
       const err = e as AxiosError | Error;
       setError(err.message);
-      console.error("Failed to add todo:", err);
     }
   };
 
   const handleToggleComplete = async (id: string) => {
-    const todoToUpdate = todos.find(todo => todo.id === id);
-    if (!todoToUpdate) return;
-
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
     try {
-      const response = await apiClient.put<Todo>(`/todos/${id}`, { // PUT request
-        completed: !todoToUpdate.completed,
+      const res = await apiClient.put(`/todos/${id}`, {
+        completed: !todo.completed,
       });
-      setTodos(todos.map(todo => (todo.id === id ? response.data : todo)));
+      setTodos(todos.map((t) => (t.id === id ? res.data : t)));
     } catch (e) {
       const err = e as AxiosError | Error;
       setError(err.message);
-      console.error("Failed to toggle todo:", err);
     }
   };
 
   const handleDeleteTodo = async (id: string) => {
     try {
-      await apiClient.delete(`/todos/${id}`); // DELETE request
-      setTodos(todos.filter(todo => todo.id !== id));
+      await apiClient.delete(`/todos/${id}`);
+      setTodos(todos.filter((t) => t.id !== id));
     } catch (e) {
       const err = e as AxiosError | Error;
       setError(err.message);
-      console.error("Failed to delete todo:", err);
     }
   };
 
-  if (isLoading) return <p>Loading todos...</p>;
-  if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
-
   return (
-    <div className="App">
-      <h1>Simple To-Do List (Axios)</h1>
-      <form onSubmit={handleAddTodo} className="add-todo-form">
-        <input
-          type="text"
-          value={newTodoText}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setNewTodoText(e.target.value)}
-          placeholder="Add a new todo"
-        />
-        <button type="submit">Add</button>
-      </form>
-      <ul className="todo-list">
-        {todos.map(todo => (
-          <li key={todo.id} className={todo.completed ? 'completed' : ''}>
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => handleToggleComplete(todo.id)}
-            />
-            <span
-              onClick={() => handleToggleComplete(todo.id)}
-              style={{ textDecoration: todo.completed ? 'line-through' : 'none', cursor: 'pointer' }}
-            >
-              {todo.text}
-            </span>
-            <button onClick={() => handleDeleteTodo(todo.id)} className="delete-btn">
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 to-blue-300 px-4">
+      <div className="bg-white w-full max-w-lg rounded-2xl shadow-lg p-8 space-y-6">
+        <h1 className="text-3xl font-bold text-center text-blue-600 flex items-center justify-center gap-2">
+          📝 My Todo List
+        </h1>
+
+        <form onSubmit={handleAddTodo} className="flex gap-3">
+          <input
+            type="text"
+            placeholder="Add a new task..."
+            value={newTodoText}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setNewTodoText(e.target.value)}
+            className="flex-grow border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
+          >
+            Add
+          </button>
+        </form>
+
+        {isLoading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">Error: {error}</p>
+        ) : todos.length === 0 ? (
+          <p className="text-center text-gray-600">No todos yet. Add something above!</p>
+        ) : (
+          <ul className="space-y-3">
+            {todos.map((todo) => (
+              <li
+                key={todo.id}
+                className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition"
+              >
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={todo.completed}
+                    onChange={() => handleToggleComplete(todo.id)}
+                    className="w-5 h-5 text-blue-500"
+                  />
+                  <span
+                    onClick={() => handleToggleComplete(todo.id)}
+                    className={`cursor-pointer select-none ${
+                      todo.completed ? 'line-through text-gray-400' : 'text-gray-800'
+                    }`}
+                  >
+                    {todo.text}
+                  </span>
+                </div>
+                <button
+                  onClick={() => handleDeleteTodo(todo.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
