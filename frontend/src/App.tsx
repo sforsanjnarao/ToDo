@@ -2,7 +2,7 @@ import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import axios, { AxiosError } from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:3001/api',
+  baseURL: 'https://todo-exsa.onrender.com/api',
 });
 
 interface Todo {
