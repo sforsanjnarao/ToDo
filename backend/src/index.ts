@@ -24,9 +24,9 @@ app.use(cors({
   }));
 app.use(express.json()); 
 console.log("fsdsd")
-app.get('/',(req:Request,res:Response):void=>{
-    console.log("hey user")
-})
+// app.get('/',(req:Request,res:Response):void=>{
+//     console.log("hey user")
+// })
 app.get('/api/todos', (req: Request, res: Response):void => {
   res.json(todos);
 });
